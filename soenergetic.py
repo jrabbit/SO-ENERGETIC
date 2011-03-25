@@ -100,6 +100,10 @@ class GameMain:
         self.cop_sprites = pygame.sprite.RenderPlain(self.cop)
         self.bear = Bear()
         self.bear_sprites = pygame.sprite.RenderPlain(self.bear)
+        
+    def advance(self):
+        self.current_stage = stages.pop(0)
+        #do stuff to make different stages
 
 if __name__ == "__main__":
     MainWindow = GameMain()

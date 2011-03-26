@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 from pygame.locals import *
 
 if not pygame.font: 
@@ -24,9 +25,9 @@ class GameMain:
         self.screen = pygame.display.set_mode((self.width, self.height))
     def MainLoop(self):
         """This is the Main Loop of the Game"""
-        self.load_sprites()
-        if pygame.mixer:
-            self.load_music()
+        # self.load_sprites()
+        # if pygame.mixer:
+        #     self.load_music()
         self.showing_credits = 0
         while 1:
             for event in pygame.event.get():
@@ -45,9 +46,9 @@ class GameMain:
                     sys.exit()
                 else:
                     self.show_credits()
-            if POINTS > 20:
-                if not self.showing_credits:
-                    self.show_credits()
+            # if POINTS > 20:
+            #     if not self.showing_credits:
+            #         self.show_credits()
             self.background = pygame.Surface(self.screen.get_size())
             self.background = self.background.convert()
             # if POINTS < 3:
@@ -60,17 +61,18 @@ class GameMain:
             #     self.bkg_color = (78,205,196)
             # elif POINTS > 15:
             #     self.bkg_color = (255,107,107)
+            self.bkg_color = (85,98,112)
             self.background.fill(self.bkg_color)
             self.screen.blit(self.background, (0, 0))
-            self.bear_sprites.draw(self.screen)
-            self.cop_sprites.draw(self.screen)
-            self.score_sprites.draw(self.screen)
-            self.cop_sprites.update(pygame.time.get_ticks())
-            self.lstCols = pygame.sprite.spritecollide(self.bear, self.cop_sprites, False)
+            # self.bear_sprites.draw(self.screen)
+            # self.cop_sprites.draw(self.screen)
+            # self.score_sprites.draw(self.screen)
+            # self.cop_sprites.update(pygame.time.get_ticks())
+            # self.lstCols = pygame.sprite.spritecollide(self.bear, self.cop_sprites, False)
             if self.showing_credits:
                 self.credits_sprites.draw(self.screen)
-            if self.lstCols:
-                self.collision()
+            # if self.lstCols:
+            #     self.collision()
                 # print self.lstCols
             pygame.display.flip()
     

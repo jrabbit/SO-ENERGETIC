@@ -107,6 +107,32 @@ class GameMain:
         self.current_stage = stages.pop(0)
         #do stuff to make different stages
 
+class dude(pygame.sprite.Sprite):
+    """Custom sprite"""
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image, self.rect = load_image('thedude_sized.png', -1)\
+        self.x_dist = 15
+    def move(self, key):
+        xMove = 0
+        yMove = 0
+        if (key == K_RIGHT):
+           xMove = self.x_dist
+        elif (key == K_LEFT):
+           xMove = -self.x_dist
+        elif (key == K_UP):
+        self.rect.move_ip(xMove,yMove)
+
+class energymeter(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.ubuntu_font = os.path.join('data', 'ubuntu-font', 'Ubuntu-R.ttf')
+        self.font = pygame.font.Font(self.ubuntu_font, 20)
+        self.color = Color('white')
+        self.lastscore = -1
+        self.update()
+        self.rect = self.image.get_rect().move(10, 450)
+
 if __name__ == "__main__":
     MainWindow = GameMain()
     MainWindow.MainLoop()

@@ -13,7 +13,6 @@ if not pygame.mixer:
 #DO WORK
 
 stages = ['spark', 'zeal', 'moxie', 'vigor', 'drive', 'fire']
-POINTS = 0
 class GameMain:
     def __init__(self):
         """Initialize"""
@@ -25,6 +24,7 @@ class GameMain:
         """Create the Screen"""
         pygame.display.set_caption("SO ENERGETIC! By Jrabbit!", "SO-ENERGETIC")
         self.screen = pygame.display.set_mode((self.width, self.height))
+        self.POINTS = 0
     def MainLoop(self):
         """This is the Main Loop of the Game"""
         self.load_sprites()
@@ -68,6 +68,7 @@ class GameMain:
             self.screen.blit(self.background, (0, 0))
             self.meterSprites.draw(self.screen)
             self.dudesprites.draw(self.screen)
+            self.meterSprites.update(pygame.time.get_ticks())
             # self.cop_sprites.update(pygame.time.get_ticks())
             # self.lstCols = pygame.sprite.spritecollide(self.bear, self.cop_sprites, False)
             if self.showing_credits:
@@ -117,15 +118,17 @@ class Dude(pygame.sprite.Sprite):
     def move(self, key):
         xMove = 0
         yMove = 0
-        if (key == K_RIGHT):
-            xMove = self.x_dist
-        elif (key == K_LEFT):
-            xMove = -self.x_dist
-        elif (key == K_UP):
-            yMove = -self.y_dist
-        elif (key == K_DOWN):
-            yMove = self.y_dist
-        self.rect.move_ip(xMove,yMove)
+        if MainWindow.POINTS > 0:
+            if (key == K_RIGHT):
+                xMove = self.x_dist
+            elif (key == K_LEFT):
+                xMove = -self.x_dist
+            elif (key == K_UP):
+                yMove = -self.y_dist
+            elif (key == K_DOWN):
+                yMove = self.y_dist
+            MainWindow.POINTS -= 1
+            self.rect.move_ip(xMove,yMove)
 
 class Energymeter(pygame.sprite.Sprite):
     def __init__(self):
@@ -134,11 +137,19 @@ class Energymeter(pygame.sprite.Sprite):
         self.font = pygame.font.Font(self.ubuntu_font, 20)
         self.color = Color('white')
         self.lastscore = -1
-        self.update()
+        self.last_update = 0
+        self.delay = 3000
+        self.update(pygame.time.get_ticks())
         self.rect = self.image.get_rect().move(10, 450)
-    def update(self):
-        self.meter = '['+ "|" * int(POINTS) + ' ' * (50 - int(POINTS)) + ']'
-        if POINTS != self.lastscore:
+        
+        
+    def update(self,t):
+        if t - self.last_update > self.delay:
+            # print "granting energy"
+            MainWindow.POINTS += 5
+            self.last_update = t
+        self.meter = '['+ "|" * int(MainWindow.POINTS) + ' ' * (50 - int(MainWindow.POINTS)) + ']'
+        if MainWindow.POINTS != self.lastscore:
             msg = "ENERGY: %s" % self.meter
             self.image = self.font.render(msg, 1, self.color)
 

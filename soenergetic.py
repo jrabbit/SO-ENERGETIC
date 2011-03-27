@@ -1,6 +1,7 @@
 import pygame
 import random
 import os
+import sys
 from pygame.locals import *
 
 if not pygame.font: 
@@ -111,8 +112,9 @@ class dude(pygame.sprite.Sprite):
     """Custom sprite"""
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect = load_image('thedude_sized.png', -1)\
+        self.image, self.rect = load_image('thedude_sized.png', -1)
         self.x_dist = 15
+
     def move(self, key):
         xMove = 0
         yMove = 0
@@ -121,7 +123,7 @@ class dude(pygame.sprite.Sprite):
         elif (key == K_LEFT):
            xMove = -self.x_dist
         elif (key == K_UP):
-        self.rect.move_ip(xMove,yMove)
+            self.rect.move_ip(xMove,yMove)
 
 class energymeter(pygame.sprite.Sprite):
     def __init__(self):
@@ -132,10 +134,15 @@ class energymeter(pygame.sprite.Sprite):
         self.lastscore = -1
         self.update()
         self.rect = self.image.get_rect().move(10, 450)
+    def update(self):
+        self.meter = '['+ "|" * int(POINTS) + ' ' * (50 - int(POINTS)) + ']'
+        if POINTS != self.lastscore:
+            msg = "ENERGY: %s" % self.meter
+            self.image = self.font.render(msg, 1, self.color)
 
 class scene(pygame.sprite.Sprite):
-     def __init__(self):
-         pygame.sprite.Sprite.__init__(self)
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
          
     def update(self):
         self.image , self.rect = load_image('bg_%s' % MainWindow.current_stage, -1)

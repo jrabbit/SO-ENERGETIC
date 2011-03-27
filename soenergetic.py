@@ -25,7 +25,11 @@ class GameMain:
         pygame.display.set_caption("SO ENERGETIC! By Jrabbit!", "SO-ENERGETIC")
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.POINTS = 0
+        #noms
         self.noms = []
+        self.last_update = 0
+        self.delay = 5000
+
     def MainLoop(self):
         """This is the Main Loop of the Game"""
         self.load_sprites()
@@ -38,8 +42,10 @@ class GameMain:
                     sys.exit()
                 elif event.type == KEYDOWN:
                     if (event.key == K_RIGHT) or (event.key == K_LEFT):
-                        for nom in self.noms:
-                            nom.move(event.key)
+                        if self.POINTS > 0:
+                            for nom in self.noms:
+                                nom.move(event.key)
+                            self.POINTS -= 1
                     if (event.key == K_UP) or (event.key == K_DOWN):
                         self.thedude.move(event.key)
             if pygame.key.get_pressed()[K_q]:
@@ -70,7 +76,7 @@ class GameMain:
             self.meterSprites.draw(self.screen)
             self.dudesprites.draw(self.screen)
             self.meterSprites.update(pygame.time.get_ticks())
-            
+            self.draw_noms(pygame.time.get_ticks())
             # self.cop_sprites.update(pygame.time.get_ticks())
             # self.lstCols = pygame.sprite.spritecollide(self.bear, self.cop_sprites, False)
             if self.showing_credits:
@@ -108,7 +114,16 @@ class GameMain:
         self.cop_sprites = pygame.sprite.RenderPlain(self.cop)
         self.bear = Bear()
         self.bear_sprites = pygame.sprite.RenderPlain(self.bear)
-        
+    def draw_noms(self,t):
+        # print t, self.last_update, self.delay
+        if t - self.last_update > self.delay:
+            print 'forming noms'    
+            self.noms.append(Noms())
+            self.last_update = t
+        for nom in self.noms:
+            self.nomsSprites = pygame.sprite.RenderPlain(nom)
+            self.nomsSprites.draw(self.screen)
+            
     def advance(self):
         self.current_stage = stages.pop(0)
         #do stuff to make different stages
@@ -116,14 +131,22 @@ class GameMain:
 
 class Noms(pygame.sprite.Sprite):
     def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
         self.xpos = random.randint(0,640)
         self.ypos = random.randint(0,480)
         self.type = random.choice(['coffee', 'cup', 'lightning', 'mntdew', 'monster'])
         #draw according to type
         self.image, self.rect = load_image('%s.png' % self.type, -1)
-        self.rect.move(self.xpos,self.ypos)
-    def update(self):
-        pass
+        # print self.xpos,self.ypos
+        self.rect.move_ip(self.xpos,self.ypos)
+        self.x_dist = 15
+        
+    def move(self, key):
+        if (key == K_RIGHT):
+            self.xMove = -self.x_dist
+        elif (key == K_LEFT):
+            self.xMove = self.x_dist
+        self.rect.move_ip(self.xMove, 0)
 
 class Dude(pygame.sprite.Sprite):
     """Custom sprite"""

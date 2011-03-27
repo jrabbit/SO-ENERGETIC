@@ -110,8 +110,11 @@ class GameMain:
             pygame.mixer.Sound.play(reallightning)
         self.POINTS += 20
         # self.meterSprites.update() #draw score to screen
-        print nom
+        nom.kill()
+        # nom.remove(self.nomsSprites)
+        # del nom
         self.nomsSprites.remove(nom)
+        self.noms.remove(nom)
         
     def draw_noms(self,t):
         # print t, self.last_update, self.delay
@@ -120,6 +123,7 @@ class GameMain:
             self.noms.append(Noms())
             self.last_update = t
         for nom in self.noms:
+            
             self.nomsSprites = pygame.sprite.RenderPlain(nom)
             self.nomsSprites.draw(self.screen)
             

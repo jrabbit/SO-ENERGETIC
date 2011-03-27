@@ -3,6 +3,7 @@ import random
 import os
 import sys
 from pygame.locals import *
+from helpers import *
 
 if not pygame.font: 
     print 'Warning, fonts disabled'
@@ -39,7 +40,7 @@ class GameMain:
                     or (event.key == K_LEFT)
                     or (event.key == K_UP)
                     or (event.key == K_DOWN)):
-                        self.bear.move(event.key)
+                        self.thedude.move(event.key)
             if pygame.key.get_pressed()[K_q]:
                 print 'you pressed q'
                 if self.showing_credits:
@@ -66,9 +67,7 @@ class GameMain:
             self.background.fill(self.bkg_color)
             self.screen.blit(self.background, (0, 0))
             self.meterSprites.draw(self.screen)
-            # self.bear_sprites.draw(self.screen)
-            # self.cop_sprites.draw(self.screen)
-            # self.score_sprites.draw(self.screen)
+            self.dudesprites.draw(self.screen)
             # self.cop_sprites.update(pygame.time.get_ticks())
             # self.lstCols = pygame.sprite.spritecollide(self.bear, self.cop_sprites, False)
             if self.showing_credits:
@@ -81,6 +80,8 @@ class GameMain:
     def load_sprites(self):
         self.energymeter = Energymeter()
         self.meterSprites = pygame.sprite.RenderPlain(self.energymeter)
+        self.thedude = Dude()
+        self.dudesprites = pygame.sprite.RenderPlain(self.thedude)
         
     def load_music(self):
         pygame.mixer.music.load(os.path.join('data', 'music', '05 - What would Freud say.ogg'))
@@ -109,18 +110,22 @@ class Dude(pygame.sprite.Sprite):
     """Custom sprite"""
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect = load_image('thedude_sized.png', -1)
+        self.image, self.rect = load_image('thedude_sized.gif', -1)
+        self.y_dist = 15
         self.x_dist = 15
 
     def move(self, key):
         xMove = 0
         yMove = 0
         if (key == K_RIGHT):
-           xMove = self.x_dist
+            xMove = self.x_dist
         elif (key == K_LEFT):
-           xMove = -self.x_dist
+            xMove = -self.x_dist
         elif (key == K_UP):
-            self.rect.move_ip(xMove,yMove)
+            yMove = -self.y_dist
+        elif (key == K_DOWN):
+            yMove = self.y_dist
+        self.rect.move_ip(xMove,yMove)
 
 class Energymeter(pygame.sprite.Sprite):
     def __init__(self):

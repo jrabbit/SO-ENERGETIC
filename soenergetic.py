@@ -28,7 +28,7 @@ class GameMain:
         #noms
         self.noms = []
         self.last_update = 0
-        self.delay = 5000
+        self.delay = 3000
 
     def MainLoop(self):
         """This is the Main Loop of the Game"""
@@ -79,11 +79,16 @@ class GameMain:
             self.draw_noms(pygame.time.get_ticks())
             # self.cop_sprites.update(pygame.time.get_ticks())
             # self.lstCols = pygame.sprite.spritecollide(self.bear, self.cop_sprites, False)
+            for nom in self.noms:
+                if pygame.sprite.spritecollide(nom, self.dudesprites, False):
+                    if nom.type == 'lightning':
+                        self.collision(nom, lightning=True)
+                    else:
+                        self.collision(nom)
+            if self.POINTS > 50:
+                self.POINTS = 50
             if self.showing_credits:
                 self.credits_sprites.draw(self.screen)
-            # if self.lstCols:
-            #     self.collision()
-                # print self.lstCols
             pygame.display.flip()
     
     def load_sprites(self):
@@ -96,24 +101,18 @@ class GameMain:
         pygame.mixer.music.load(os.path.join('data', 'music', '05 - What would Freud say.ogg'))
         pygame.mixer.music.play()
         
-    def collision(self, lightning=False):
+    def collision(self, nom, lightning=False):
         # wilhelm = pygame.mixer.Sound(os.path.join('data', 'music', 'wscream1.ogg'))
         # pygame.mixer.Sound.play(wilhelm)
         if lightning:
             reallightning = pygame.mixer.Sound(os.path.join('data', 
             'audio','reallightning.ogg'))
             pygame.mixer.Sound.play(reallightning)
-        MainWindow.POINTS += 20
-        self.score_sprites.update() #draw score to screen
-        #kill the cop and respawn
-        # self.nomsSprites.remove()
-        self.cop_sprites.remove(self.cop)
-        self.bear_sprites.remove(self.bear)
-        #respawn
-        self.cop = Cop()
-        self.cop_sprites = pygame.sprite.RenderPlain(self.cop)
-        self.bear = Bear()
-        self.bear_sprites = pygame.sprite.RenderPlain(self.bear)
+        self.POINTS += 20
+        # self.meterSprites.update() #draw score to screen
+        print nom
+        self.nomsSprites.remove(nom)
+        
     def draw_noms(self,t):
         # print t, self.last_update, self.delay
         if t - self.last_update > self.delay:

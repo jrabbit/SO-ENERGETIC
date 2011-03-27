@@ -54,7 +54,7 @@ class GameMain:
                     pygame.time.wait(1000)
                     sys.exit()
                 else:
-                    self.show_credits()
+                    self.credits()
             # if POINTS > 20:
             #     if not self.showing_credits:
             #         self.show_credits()
@@ -77,8 +77,8 @@ class GameMain:
             self.dudesprites.draw(self.screen)
             self.meterSprites.update(pygame.time.get_ticks())
             self.draw_noms(pygame.time.get_ticks())
-            # self.cop_sprites.update(pygame.time.get_ticks())
-            # self.lstCols = pygame.sprite.spritecollide(self.bear, self.cop_sprites, False)
+            if self.showing_credits:
+                self.credits_sprites.draw(self.screen)
             for nom in self.noms:
                 if pygame.sprite.spritecollide(nom, self.dudesprites, False):
                     if nom.type == 'lightning':
@@ -86,11 +86,15 @@ class GameMain:
                     else:
                         self.collision(nom)
             if self.POINTS > 50:
-                self.POINTS = 50
+                self.credits()
             if self.showing_credits:
                 self.credits_sprites.draw(self.screen)
             pygame.display.flip()
-    
+    def credits(self):
+        self.credits = Credits()
+        self.credits_sprites = pygame.sprite.RenderPlain(self.credits)
+        self.showing_credits = 1
+        
     def load_sprites(self):
         self.energymeter = Energymeter()
         self.meterSprites = pygame.sprite.RenderPlain(self.energymeter)
@@ -108,7 +112,7 @@ class GameMain:
             reallightning = pygame.mixer.Sound(os.path.join('data', 
             'audio','reallightning.ogg'))
             pygame.mixer.Sound.play(reallightning)
-        self.POINTS += 20
+        self.POINTS += 5
         # self.meterSprites.update() #draw score to screen
         nom.kill()
         # nom.remove(self.nomsSprites)
@@ -119,7 +123,7 @@ class GameMain:
     def draw_noms(self,t):
         # print t, self.last_update, self.delay
         if t - self.last_update > self.delay:
-            print 'forming noms'    
+            # print 'forming noms'    
             self.noms.append(Noms())
             self.last_update = t
         for nom in self.noms:
@@ -196,6 +200,14 @@ class Energymeter(pygame.sprite.Sprite):
         if MainWindow.POINTS != self.lastscore:
             msg = "ENERGY: %s" % self.meter
             self.image = self.font.render(msg, 1, self.color)
+
+class Credits(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image, self.rect = load_image('titlecard.png', -1)
+        self.powerthirst = pygame.mixer.Sound(os.path.join('data', 
+        'audio','powerthirst.ogg'))
+        pygame.mixer.Sound.play(self.powerthirst)
 
 class scene(pygame.sprite.Sprite):
     def __init__(self):

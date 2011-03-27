@@ -25,6 +25,7 @@ class GameMain:
         pygame.display.set_caption("SO ENERGETIC! By Jrabbit!", "SO-ENERGETIC")
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.POINTS = 0
+        self.noms = []
     def MainLoop(self):
         """This is the Main Loop of the Game"""
         self.load_sprites()
@@ -36,10 +37,10 @@ class GameMain:
                 if event.type == pygame.QUIT:
                     sys.exit()
                 elif event.type == KEYDOWN:
-                    if ((event.key == K_RIGHT)
-                    or (event.key == K_LEFT)
-                    or (event.key == K_UP)
-                    or (event.key == K_DOWN)):
+                    if (event.key == K_RIGHT) or (event.key == K_LEFT):
+                        for nom in self.noms:
+                            nom.move(event.key)
+                    if (event.key == K_UP) or (event.key == K_DOWN):
                         self.thedude.move(event.key)
             if pygame.key.get_pressed()[K_q]:
                 print 'you pressed q'
@@ -69,6 +70,7 @@ class GameMain:
             self.meterSprites.draw(self.screen)
             self.dudesprites.draw(self.screen)
             self.meterSprites.update(pygame.time.get_ticks())
+            
             # self.cop_sprites.update(pygame.time.get_ticks())
             # self.lstCols = pygame.sprite.spritecollide(self.bear, self.cop_sprites, False)
             if self.showing_credits:
@@ -88,13 +90,17 @@ class GameMain:
         pygame.mixer.music.load(os.path.join('data', 'music', '05 - What would Freud say.ogg'))
         pygame.mixer.music.play()
         
-    def collision(self):
-        global POINTS
-        wilhelm = pygame.mixer.Sound(os.path.join('data', 'music', 'wscream1.ogg'))
-        pygame.mixer.Sound.play(wilhelm)
-        POINTS += 1
+    def collision(self, lightning=False):
+        # wilhelm = pygame.mixer.Sound(os.path.join('data', 'music', 'wscream1.ogg'))
+        # pygame.mixer.Sound.play(wilhelm)
+        if lightning:
+            reallightning = pygame.mixer.Sound(os.path.join('data', 
+            'audio','reallightning.ogg'))
+            pygame.mixer.Sound.play(reallightning)
+        MainWindow.POINTS += 20
         self.score_sprites.update() #draw score to screen
         #kill the cop and respawn
+        # self.nomsSprites.remove()
         self.cop_sprites.remove(self.cop)
         self.bear_sprites.remove(self.bear)
         #respawn
@@ -106,6 +112,18 @@ class GameMain:
     def advance(self):
         self.current_stage = stages.pop(0)
         #do stuff to make different stages
+
+
+class Noms(pygame.sprite.Sprite):
+    def __init__(self):
+        self.xpos = random.randint(0,640)
+        self.ypos = random.randint(0,480)
+        self.type = random.choice(['coffee', 'cup', 'lightning', 'mntdew', 'monster'])
+        #draw according to type
+        self.image, self.rect = load_image('%s.png' % self.type, -1)
+        self.rect.move(self.xpos,self.ypos)
+    def update(self):
+        pass
 
 class Dude(pygame.sprite.Sprite):
     """Custom sprite"""

@@ -133,6 +133,15 @@ class energymeter(pygame.sprite.Sprite):
         self.update()
         self.rect = self.image.get_rect().move(10, 450)
 
+class scene(pygame.sprite.Sprite):
+     def __init__(self):
+         pygame.sprite.Sprite.__init__(self)
+         
+    def update(self):
+        self.image , self.rect = load_image('bg_%s' % MainWindow.current_stage, -1)
+        self.position = self.move
+        
+
 if __name__ == "__main__":
     MainWindow = GameMain()
     MainWindow.MainLoop()

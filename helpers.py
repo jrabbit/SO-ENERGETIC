@@ -3,10 +3,10 @@
 import os, sys
 import pygame
 from pygame.locals import *
+from pkg_resources import resource_filename
 
 def load_image(name, colorkey=None):
-    fullname = os.path.join('data', 'images')
-    fullname = os.path.join(fullname, name)
+    fullname = resource_filename(__name__, os.path.join('data', 'images', name))
     try:
         image = pygame.image.load(fullname)
     except pygame.error, message:

@@ -1,9 +1,12 @@
+#! /usr/bin/env python
+
 import pygame
 import random
 import os
 import sys
 from pygame.locals import *
 from helpers import *
+from pkg_resources import resource_filename
 
 if not pygame.font: 
     print 'Warning, fonts disabled'
@@ -101,16 +104,16 @@ class GameMain:
         self.thedude = Dude()
         self.dudesprites = pygame.sprite.RenderPlain(self.thedude)
         
-    def load_music(self):
-        pygame.mixer.music.load(os.path.join('data', 'music', '05 - What would Freud say.ogg'))
-        pygame.mixer.music.play()
+    # def load_music(self):
+    #     pygame.mixer.music.load(os.path.join('data', 'music', '05 - What would Freud say.ogg'))
+    #     pygame.mixer.music.play()
         
     def collision(self, nom, lightning=False):
         # wilhelm = pygame.mixer.Sound(os.path.join('data', 'music', 'wscream1.ogg'))
         # pygame.mixer.Sound.play(wilhelm)
         if lightning:
-            reallightning = pygame.mixer.Sound(os.path.join('data', 
-            'audio','reallightning.ogg'))
+            reallightning = pygame.mixer.Sound(resource_filename(__name__,os.path.join('data', 
+            'audio','reallightning.ogg')))
             pygame.mixer.Sound.play(reallightning)
         self.POINTS += 5
         # self.meterSprites.update() #draw score to screen
@@ -181,7 +184,7 @@ class Dude(pygame.sprite.Sprite):
 class Energymeter(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.ubuntu_font = os.path.join('data', 'ubuntu-font', 'Ubuntu-R.ttf')
+        self.ubuntu_font = resource_filename(__name__,os.path.join('data', 'ubuntu-font', 'Ubuntu-R.ttf'))
         self.font = pygame.font.Font(self.ubuntu_font, 20)
         self.color = Color('white')
         self.lastscore = -1
@@ -205,8 +208,8 @@ class Credits(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = load_image('titlecard.png', -1)
-        self.powerthirst = pygame.mixer.Sound(os.path.join('data', 
-        'audio','powerthirst.ogg'))
+        self.powerthirst = pygame.mixer.Sound(resource_filename(__name__,os.path.join('data', 
+        'audio','powerthirst.ogg')))
         pygame.mixer.Sound.play(self.powerthirst)
 
 class scene(pygame.sprite.Sprite):

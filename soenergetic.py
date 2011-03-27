@@ -12,7 +12,7 @@ if not pygame.mixer:
 #DO WORK
 
 stages = ['spark', 'zeal', 'moxie', 'vigor', 'drive', 'fire']
-
+POINTS = 0
 class GameMain:
     def __init__(self):
         """Initialize"""
@@ -26,7 +26,7 @@ class GameMain:
         self.screen = pygame.display.set_mode((self.width, self.height))
     def MainLoop(self):
         """This is the Main Loop of the Game"""
-        # self.load_sprites()
+        self.load_sprites()
         # if pygame.mixer:
         #     self.load_music()
         self.showing_credits = 0
@@ -65,6 +65,7 @@ class GameMain:
             self.bkg_color = (85,98,112)
             self.background.fill(self.bkg_color)
             self.screen.blit(self.background, (0, 0))
+            self.meterSprites.draw(self.screen)
             # self.bear_sprites.draw(self.screen)
             # self.cop_sprites.draw(self.screen)
             # self.score_sprites.draw(self.screen)
@@ -78,12 +79,8 @@ class GameMain:
             pygame.display.flip()
     
     def load_sprites(self):
-        self.bear = Bear()
-        self.bear_sprites = pygame.sprite.RenderPlain(self.bear)
-        self.cop = Cop()
-        self.cop_sprites = pygame.sprite.RenderPlain(self.cop)
-        self.scoreboard = Score()
-        self.score_sprites = pygame.sprite.RenderPlain(self.scoreboard)
+        self.energymeter = Energymeter()
+        self.meterSprites = pygame.sprite.RenderPlain(self.energymeter)
         
     def load_music(self):
         pygame.mixer.music.load(os.path.join('data', 'music', '05 - What would Freud say.ogg'))
@@ -108,7 +105,7 @@ class GameMain:
         self.current_stage = stages.pop(0)
         #do stuff to make different stages
 
-class dude(pygame.sprite.Sprite):
+class Dude(pygame.sprite.Sprite):
     """Custom sprite"""
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -125,7 +122,7 @@ class dude(pygame.sprite.Sprite):
         elif (key == K_UP):
             self.rect.move_ip(xMove,yMove)
 
-class energymeter(pygame.sprite.Sprite):
+class Energymeter(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.ubuntu_font = os.path.join('data', 'ubuntu-font', 'Ubuntu-R.ttf')
